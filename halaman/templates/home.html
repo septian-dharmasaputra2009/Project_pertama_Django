@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daftar Artikel</title>
+    <title>Web Septian</title>
     {% load static %}
 <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
-    <h1>Daftar Artikel</h1>
+    <h1>Isi Komentar</h1>
     <form method="GET" action="{% url 'home' %}">
     <input type="text" name="q" placeholder="Cari artikel..." value="{{ query|default:'' }}">
     <button type="submit">Cari</button>
 </form>
-    <a href="{% url 'tambah' %}">+ Tambah Artikel Baru</a>
+    <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu</a>
     {% for a in artikels %}
         <div style="margin-bottom: 20px;">
             <h2>{{ a.judul }}</h2>
