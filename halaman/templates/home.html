@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Artikel</title>
+    {% load static %}
+<link rel="stylesheet" href="{% static 'halaman/style.css' %}">
+</head>
+<body>
+    <h1>Daftar Artikel</h1>
+    <form method="GET" action="{% url 'home' %}">
+    <input type="text" name="q" placeholder="Cari artikel..." value="{{ query|default:'' }}">
+    <button type="submit">Cari</button>
+</form>
+    <a href="{% url 'tambah' %}">+ Tambah Artikel Baru</a>
+    {% for a in artikels %}
+        <div style="margin-bottom: 20px;">
+            <h2>{{ a.judul }}</h2>
+            <p>{{ a.isi }}</p>
+            <a href="{% url 'edit' a.id %}">Edit</a>
+            <a href="{% url 'hapus' a.id %}" onclick="return confirm('Yakin mau hapus?')">Hapus</a>
+            <small>Dibuat pada: {{ a.tanggal_dibuat }}</small>
+        </div>
+    {% empty %}
+        <p>Tidak ada artikel.</p>
+    {% endfor %}
+
+</body>
+</html>

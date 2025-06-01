@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Artikel</title>
+</head>
+<body>
+    <h1>Edit: {{ artikel.judul }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Simpan Perubahan</button>
+    </form>
+    <a href="/">← Kembali</a>
+</body>
+</html>

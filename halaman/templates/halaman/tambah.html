@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambah Artikel</title>
+</head>
+<body>
+    <h1>Tambah Artikel Baru</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Simpan</button>
+    </form>
+    <a href="/">← Kembali</a>
+</body>
+</html>
