@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Artikel
 from .forms import ArtikelForm
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     query = request.GET.get('q')
@@ -21,6 +22,7 @@ def tambah_artikel(request):
         form = ArtikelForm()
     return render(request, 'halaman/tambah.html', {'form': form})
 
+@login_required
 def edit_artikel(request, id):
     artikel = get_object_or_404(Artikel, id=id)
     if request.method == 'POST':
@@ -32,6 +34,7 @@ def edit_artikel(request, id):
         form = ArtikelForm(instance=artikel)
     return render(request, 'halaman/edit.html', {'form': form, 'artikel': artikel})
 
+@login_required
 def hapus_artikel(request, id):
     artikel = get_object_or_404(Artikel, id=id)
     artikel.delete()
