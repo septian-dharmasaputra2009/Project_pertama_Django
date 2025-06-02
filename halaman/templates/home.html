@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Septian</title>
+=======
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Web Septian</title>
+
     {% load static %}
 <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
+
     <h1>Daftar Komentar</h1>
     {% if user.is_authenticated %}
         <p>Hai, {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></p>
@@ -18,6 +24,14 @@
     <button type="submit">Cari</button>
     </form>
     <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu!</a>
+
+    <h1>Isi Komentar</h1>
+    <form method="GET" action="{% url 'home' %}">
+    <input type="text" name="q" placeholder="Cari artikel..." value="{{ query|default:'' }}">
+    <button type="submit">Cari</button>
+</form>
+    <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu</a>
+
     {% for a in artikels %}
         <div style="margin-bottom: 20px;">
             <h2>{{ a.judul }}</h2>

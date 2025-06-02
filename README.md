@@ -1,2 +1,2 @@
 tes link
-https://tayeon-web.onrender.com
+https://septiandharmasaputrasolichin.pythonanywhere.com
