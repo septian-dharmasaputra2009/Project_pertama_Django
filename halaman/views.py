@@ -4,7 +4,6 @@ from .forms import ArtikelForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
 def home(request):
@@ -13,7 +12,7 @@ def home(request):
         artikel_list = Artikel.objects.filter(judul__icontains=query)
     else:
         artikel_list = Artikel.objects.all()
-    return render(request, 'home.html', {'artikels': artikel_list, 'query': query})
+    return render(request, 'home.html', {'artikel': artikel_list, 'query': query})
 
 def tambah_artikel(request):
     if request.method == 'POST':
