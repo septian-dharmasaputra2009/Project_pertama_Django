@@ -3,6 +3,9 @@ from .models import Artikel
 from .forms import ArtikelForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 def home(request):
     query = request.GET.get('q')
@@ -38,4 +41,9 @@ def edit_artikel(request, id):
 def hapus_artikel(request, id):
     artikel = get_object_or_404(Artikel, id=id)
     artikel.delete()
+    return redirect('home')
+
+@login_required
+def logout_view(request):
+    logout(request)
     return redirect('home')
