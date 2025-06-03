@@ -23,7 +23,7 @@
     <button type="submit">Cari</button>
     </form>
     <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu!</a>
-    {% for a in artikel %}
+    {% for a in artikels %}
     <div style="margin-bottom: 20px;">
     <h2>{{ a.judul }}</h2>
     <p>{{ a.isi }}</p>
