@@ -1,0 +1,14 @@
+# Abaikan file database
+db.sqlite3
+
+# Abaikan virtual environment
+venv/
+
+# Abaikan cache Python
+__pycache__/
+*.pyc
+
+# Abaikan file static hasil build
+staticfiles/
+
+README.md

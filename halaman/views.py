@@ -11,7 +11,7 @@ def home(request):
         artikel_list = Artikel.objects.filter(judul__icontains=query)
     else:
         artikel_list = Artikel.objects.all()
-    return render(request, 'home.html', {'artikels': artikel_list, 'query': query})
+    return render(request, 'home.html', {'artikel': artikel_list, 'query': query})
 
 def tambah_artikel(request):
     if request.method == 'POST':
