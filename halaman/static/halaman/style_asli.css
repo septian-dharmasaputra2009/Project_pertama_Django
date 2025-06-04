@@ -1,0 +1,46 @@
+@media (max-width: 768px) {
+  header {
+    padding: 30px;
+  }
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    padding: 30px;
+}
+
+h1 {
+    color: #007acc;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    padding: 8px;
+    width: 200px;
+}
+
+button {
+    padding: 8px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+div.artikel {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+a {
+    color: #007acc;
+    text-decoration: none;
+    margin-right: 10px;
+}

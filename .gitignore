@@ -11,4 +11,6 @@ __pycache__/
 # Abaikan file static hasil build
 staticfiles/
 
+node_modules/
+
 README.md

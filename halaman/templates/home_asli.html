@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Septian</title>
+
+    {% load static %}
+<link rel="stylesheet" href="{% static 'halaman/style.css' %}">
+</head>
+<body>
+    <h1>Daftar Komentar</h1>
+    {% if user.is_authenticated %}
+    <p>Hai, {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></p>
+    {% else %}
+    <a href="{% url 'login' %}">Login Admin</a>
+    {% endif %}
+    <form method="GET" action="{% url 'home' %}">
+    <input type="text" name="q" placeholder="Cari artikel..." value="{{ query|default:'' }}">
+    <button type="submit">Cari</button>
+    </form>
+    <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu!</a>
+    <p>Artikel count: {{ artikel |length }}</p>
+    {% for a in artikel %}
+    <div style="margin-bottom: 20px;">
+    <h2>{{ a.judul }}</h2>
+    <p>{{ a.isi }}</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'edit' a.id %}">Edit</a>
+    <a href="{% url 'hapus' a.id %}" onclick="return confirm('Yakin mau hapus?')">Hapus</a>
+    {% endif %}
+    <small>Dibuat pada: {{ a.tanggal_dibuat }}</small>
+    </div>
+    {% empty %}
+        <p>Tidak ada artikel.</p>
+    {% endfor %}
+
+</body>
+</html>

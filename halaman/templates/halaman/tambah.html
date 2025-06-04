@@ -1,15 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Tambah Artikel</title>
+    <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
-    <h1>Tambah Artikel Baru</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Simpan</button>
-    </form>
-    <a href="/">← Kembali</a>
+ <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+  <div class="sidebar hide" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="{% url 'home' %}">🏠 Beranda</a></li>
+      <li><a href="{% url 'tambah' %}">✍️ Tambah Komentar</a></li>
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">🔒 Logout</a></li>
+      {% else %}
+      <li><a href="{% url 'login' %}">🔑 Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+    <div class="main-content" id="main">
+        <div class="container">
+            <h1>Tambah Artikel Baru</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <break>
+                {{ form.as_p }}
+                <a href="/">← Kembali</a>
+                <button type="submit">Simpan</button>
+            </form>
+        </div>
+    </div>
+<script>console.log("JS dimuat");</script>
+<script src="{% static 'main.js' %}"></script>
 </body>
 </html>
