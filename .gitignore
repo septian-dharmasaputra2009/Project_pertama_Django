@@ -1,5 +1,8 @@
 # Abaikan file database
 db.sqlite3
+*.sqlite3
+.sqlite3
+*db.sqlite3
 
 # Abaikan virtual environment
 venv/
@@ -7,6 +10,7 @@ venv/
 # Abaikan cache Python
 __pycache__/
 *.pyc
+.pyc
 
 # Abaikan file static hasil build
 staticfiles/
