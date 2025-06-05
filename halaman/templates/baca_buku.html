@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ buku.judul }}</title>
+  <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
+</head>
+<body>
+
+<!-- ===== Sidebar & Header singkat ===== -->
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+<div id="sidebar" class="sidebar hide">
+  <h2>Menu</h2>
+  <ul>
+    <li><a href="{% url 'home' %}">🏠 Beranda</a></li>
+    <li><a href="{% url 'tambah' %}">✍️ Tambah Komentar</a></li>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'tambah_buku' %}">➕ Tambah Buku</a></li>
+      <li><a href="{% url 'logout' %}" onclick="return confirm('Yakin mau logout?')">🔒 Logout</a></li>
+    {% else %}
+      <li><a href="{% url 'login' %}">🔑 Login</a></li>
+    {% endif %}
+  </ul>
+</div>
+
+<!-- ===== Info buku ===== -->
+<div class="container" id="main">
+  <h2>{{ buku.judul }}</h2>
+  <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
+  <p>{{ buku.deskripsi }}</p>
+
+  <a href="{{ buku.gdrive_download_url }}" target="_blank" class="btn btn-primary">⬇️ Download PDF</a>
+</div>
+
+  <!-- ===== PDF Viewer (10 halaman) ===== -->
+<div id="pdf-viewer" style="text-align: center; margin-top: 40px;">
+  <div id="pdf-pages"></div>
+  <button onclick="prevGroup()">⬅️ Sebelumnya</button>
+  <button onclick="nextGroup()">➡️ Selanjutnya</button>
+  <p>Halaman: <span id="page-start">1</span> – <span id="page-end">10</span> dari <span id="page-count">?</span></p>
+</div>
+
+<!-- ===== pdf.js CDN ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+</script>
+
+<!-- ===== Script render 10 halaman ===== -->
+<script>
+const url = "{{ buku.gdrive_download_url }}"; // Supabase PDF URL
+
+let pdfDoc = null;
+let currentGroup = 1;
+const pagesPerGroup = 10;
+
+const viewer = document.getElementById("pdf-pages");
+const pageStartSpan = document.getElementById("page-start");
+const pageEndSpan = document.getElementById("page-end");
+const pageCountSpan = document.getElementById("page-count");
+
+function renderGroup(groupNumber) {
+  const startPage = (groupNumber - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(pdfDoc.numPages, groupNumber * pagesPerGroup);
+
+  viewer.innerHTML = ''; // clear previous
+
+  for (let i = startPage; i <= endPage; i++) {
+    pdfDoc.getPage(i).then(function (page) {
+      const scale = 1.2;
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      viewer.appendChild(canvas);
+
+      page.render({
+        canvasContext: context,
+        viewport: viewport
+      });
+    });
+  }
+
+  pageStartSpan.textContent = startPage;
+  pageEndSpan.textContent = endPage;
+}
+
+function nextGroup() {
+  const maxGroup = Math.ceil(pdfDoc.numPages / pagesPerGroup);
+  if (currentGroup < maxGroup) {
+    currentGroup++;
+    renderGroup(currentGroup);
+  }
+}
+
+function prevGroup() {
+  if (currentGroup > 1) {
+    currentGroup--;
+    renderGroup(currentGroup);
+  }
+}
+
+pdfjsLib.getDocument(url).promise.then(function (pdf) {
+  pdfDoc = pdf;
+  pageCountSpan.textContent = pdf.numPages;
+  renderGroup(currentGroup);
+});
+</script>
+
+<!-- Toggle sidebar JS kamu -->
+<script src="{% static 'main.js' %}"></script>
+</body>
+</html>

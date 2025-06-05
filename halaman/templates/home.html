@@ -7,16 +7,15 @@
     <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
-
   <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-
   <div class="sidebar hide" id="sidebar">
     <h2>Menu</h2>
     <ul>
       <li><a href="{% url 'home' %}">🏠 Beranda</a></li>
       <li><a href="{% url 'tambah' %}">✍️ Tambah Komentar</a></li>
       {% if user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">🔒 Logout</a></li>
+      <li><a href="{% url 'tambah_buku' %}">➕ Tambah Buku</a></li>
+      <li><a href="{% url 'logout' %}" onclick="return confirm('Yakin mau logout?')">🔒 Logout</a></li>
       {% else %}
       <li><a href="{% url 'login' %}">🔑 Login</a></li>
       {% endif %}
@@ -25,18 +24,24 @@
 
   <div class="main-content" id="main">
     <div class="container">
-      <h1>Daftar Komentar</h1>
+      <h1>Daftar Konten</h1>
       {% if user.is_authenticated %}
-      <p>Hai, {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></p>
-      {% else %}
-      <a href="{% url 'login' %}">Login Admin</a>
+      <p>Hai, {{ user.username }}</p>
       {% endif %}
-
+      
       <form method="GET" action="{% url 'home' %}">
           <input type="text" name="q" placeholder="Cari artikel..." value="{{ query|default:'' }}">
           <button type="submit">Cari</button>
       </form>
-
+      <div class="info-box">
+        <h2>📚 Selamat Datang di Web Eksperimen Septian</h2>
+        <p>Di website ini kamu bisa membaca buku dalam format PDF secara gratis. 
+     File langsung diambil dari Google Drive untuk efisiensi loading.</p>
+        <p>Kami menampilkan buku per 10 halaman agar lebih ringan dan nyaman dibaca. 
+     Kamu juga bisa mengunduhnya!</p>
+        <a href="{% url 'daftar_buku' %}">Lihat Daftar Buku</a>
+      </div>
+      
       <a href="{% url 'tambah' %}">+ Tambahkan Komentarmu!</a>
       <p>Artikel count: {{ artikel|length }}</p>
 

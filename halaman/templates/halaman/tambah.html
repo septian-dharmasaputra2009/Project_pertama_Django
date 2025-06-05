@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Tambah Artikel</title>
     <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
@@ -14,7 +15,8 @@
       <li><a href="{% url 'home' %}">🏠 Beranda</a></li>
       <li><a href="{% url 'tambah' %}">✍️ Tambah Komentar</a></li>
       {% if user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">🔒 Logout</a></li>
+      <li><a href="{% url 'tambah_buku' %}">➕ Tambah Buku</a></li>
+      <li><a href="{% url 'logout' %}" onclick="return confirm('Yakin mau logout?')">🔒 Logout</a></li>
       {% else %}
       <li><a href="{% url 'login' %}">🔑 Login</a></li>
       {% endif %}

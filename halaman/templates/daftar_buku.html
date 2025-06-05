@@ -1,15 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
+  <title>Web Septian</title>
   <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
-
   <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-
   <div class="sidebar hide" id="sidebar">
     <h2>Menu</h2>
     <ul>
@@ -23,18 +21,27 @@
       {% endif %}
     </ul>
   </div>
-   <div class="main-content" id="main">
+  <div class="main-content" id="main">
     <div class="container">
-      <h2>Login</h2>
-      <form method="post">
-        {% csrf_token %}
-        <break>
-        {{ form.as_p }}
-       <button type="submit">Login</button>
-      </form>
+      <h1>📚 Daftar Buku</h1>
+
+      {% for buku in bukus %}
+        <div class="info-box">
+          <h3>{{ buku.judul }}</h3>
+          <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
+          <p>{{ buku.deskripsi }}</p>
+          <a href="{% url 'baca_buku' buku.id %}">📖 Baca Buku</a>
+          <a href="{{ buku.gdrive_download_url }}">⬇️ Download</a>
+          {% if user.is_authenticated %}
+          <a href="{% url 'edit_buku' buku.id %}">📝 Edit Buku</a>
+          {% endif %}
+        </div>
+      {% empty %}
+      <p>Belum ada buku tersedia.</p>
+      {% endfor %}
     </div>
   </div>
 <script>console.log("JS dimuat");</script>
-<script src="{% static 'main.js' %}"></script>
+<script src="{% static 'halaman/main.js' %}"></script>
 </body>
 </html>
