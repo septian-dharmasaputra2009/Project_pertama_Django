@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- ===== Sidebar & Header singkat ===== -->
+<!-- SIDEBAR & HEADER -->
 <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 <div id="sidebar" class="sidebar hide">
   <h2>Menu</h2>
@@ -25,95 +25,88 @@
   </ul>
 </div>
 
-<!-- ===== Info buku ===== -->
+<!-- INFO BUKU -->
 <div class="container" id="main">
   <h2>{{ buku.judul }}</h2>
   <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
   <p>{{ buku.deskripsi }}</p>
-
   <a href="{{ buku.gdrive_download_url }}" target="_blank" class="btn btn-primary">⬇️ Download PDF</a>
 </div>
 
-  <!-- ===== PDF Viewer (10 halaman) ===== -->
-<div id="pdf-viewer" style="text-align: center; margin-top: 40px;">
+<!-- PDF VIEWER -->
+<section id="pdf-viewer" class="pdf-wrapper">
   <div id="pdf-pages"></div>
-  <button onclick="prevGroup()">⬅️ Sebelumnya</button>
-  <button onclick="nextGroup()">➡️ Selanjutnya</button>
-  <p>Halaman: <span id="page-start">1</span> – <span id="page-end">10</span> dari <span id="page-count">?</span></p>
-</div>
+  <button onclick="prevPageGroup()">⬅️ Sebelumnya</button>
+  <button onclick="nextPageGroup()">➡️ Selanjutnya</button>
+  <p>Halaman: <span id="page-num">1</span> – <span id="page-end">10</span> dari <span id="page-count">?</span></p>
+</section>
 
-<!-- ===== pdf.js CDN ===== -->
+<!-- PDF.js & SCRIPT -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 <script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 </script>
 
-<!-- ===== Script render 10 halaman ===== -->
 <script>
-const url = "{{ buku.gdrive_download_url }}"; // Supabase PDF URL
+const url = "{{ buku.gdrive_download_url }}";
+let pdfDoc = null, currentPageGroup = 1;
+const pagesPerGroup = 10, container = document.getElementById('pdf-pages');
 
-let pdfDoc = null;
-let currentGroup = 1;
-const pagesPerGroup = 10;
+async function renderPageGroup(g) {
+  const start = (g - 1) * pagesPerGroup + 1;
+  const end = Math.min(pdfDoc.numPages, g * pagesPerGroup);
+  container.innerHTML = '';
 
-const viewer = document.getElementById("pdf-pages");
-const pageStartSpan = document.getElementById("page-start");
-const pageEndSpan = document.getElementById("page-end");
-const pageCountSpan = document.getElementById("page-count");
-
-function renderGroup(groupNumber) {
-  const startPage = (groupNumber - 1) * pagesPerGroup + 1;
-  const endPage = Math.min(pdfDoc.numPages, groupNumber * pagesPerGroup);
-
-  viewer.innerHTML = ''; // clear previous
-
-  for (let i = startPage; i <= endPage; i++) {
-    pdfDoc.getPage(i).then(function (page) {
-      const scale = 1.2;
-      const viewport = page.getViewport({ scale });
-
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
+  for (let n = start; n <= end; n++) {
+    try {
+      const page = await pdfDoc.getPage(n);
+      const viewport = page.getViewport({ scale: 1.0 });
+      const canvas = document.createElement('canvas');
       canvas.width = viewport.width;
       canvas.height = viewport.height;
+      container.appendChild(canvas);
 
-      viewer.appendChild(canvas);
-
-      page.render({
-        canvasContext: context,
-        viewport: viewport
-      });
-    });
+      await page.render({
+        canvasContext: canvas.getContext('2d'),
+        viewport
+      }).promise;
+      console.log('✅ halaman', n);
+    } catch (e) {
+      console.error('❌ halaman', n, e);
+    }
   }
 
-  pageStartSpan.textContent = startPage;
-  pageEndSpan.textContent = endPage;
+  document.getElementById('page-num').textContent = start;
+  document.getElementById('page-end').textContent = end;
+  document.getElementById('page-count').textContent = pdfDoc.numPages;
 }
 
-function nextGroup() {
-  const maxGroup = Math.ceil(pdfDoc.numPages / pagesPerGroup);
-  if (currentGroup < maxGroup) {
-    currentGroup++;
-    renderGroup(currentGroup);
-  }
-}
-
-function prevGroup() {
-  if (currentGroup > 1) {
-    currentGroup--;
-    renderGroup(currentGroup);
+function nextPageGroup() {
+  if (currentPageGroup < Math.ceil(pdfDoc.numPages / pagesPerGroup)) {
+    currentPageGroup++;
+    renderPageGroup(currentPageGroup);
   }
 }
 
-pdfjsLib.getDocument(url).promise.then(function (pdf) {
+function prevPageGroup() {
+  if (currentPageGroup > 1) {
+    currentPageGroup--;
+    renderPageGroup(currentPageGroup);
+  }
+}
+
+pdfjsLib.getDocument({
+  url,
+  rangeChunkSize: 65536,
+  cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/cmaps/',
+  cMapPacked: true,
+  standardFontDataUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/stdFont/'
+}).promise.then(pdf => {
   pdfDoc = pdf;
-  pageCountSpan.textContent = pdf.numPages;
-  renderGroup(currentGroup);
+  renderPageGroup(currentPageGroup);
 });
 </script>
 
-<!-- Toggle sidebar JS kamu -->
 <script src="{% static 'main.js' %}"></script>
 </body>
 </html>

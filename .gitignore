@@ -1,16 +1,18 @@
+# Abaikan cache Python
+*.pyc
+__pycache__/
+.pyc
 # Abaikan file database
 db.sqlite3
-
+*.sqlite3
+.sqlite3
+*db.sqlite3
 # Abaikan virtual environment
 venv/
 
-# Abaikan cache Python
-__pycache__/
-*.pyc
-
 # Abaikan file static hasil build
 staticfiles/
-
+.env
 node_modules/
 
 README.md
