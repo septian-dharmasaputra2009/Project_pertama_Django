@@ -3,7 +3,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Buku</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
 </head>
 <body>
@@ -27,25 +29,48 @@
         {% csrf_token %}<break>
         {{ buku_form.as_p }}
         <h3>Edit Halaman</h3>
+      <div id="formset-container" >
         {{ formset.management_form }}
         {% for form in formset %}
-          <div style="margin-bottom:10px;">
-            {{ form.as_p }}
-            {% if form.instance.pk %}
-              <label>Hapus: {{ form.DELETE }}</label>
-            {% endif %}
-          </div>
+        <div class="halaman-form" style="margin-bottom:10px;">
+        {{ form.as_p }}
+        </div>
         {% endfor %}
+      </div>
+        
+      
+      
+        
+        <button type="button" id="add-page">Tambahkan Halaman +</button><br><br>
         <button type="submit">Simpan Perubahan</button>
         <hr>
         <h3 class="text-danger">Hapus Buku</h3>
         <p>Jika kamu menghapus buku ini, semua halaman juga akan terhapus. Tindakan ini tidak bisa dibatalkan.</p>
-
-        <form method="post" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
-        {% csrf_token %}
-        <button type="submit" name="hapus_buku" class="btn btn-danger">🗑️ Hapus Buku</button>
+      
+          <form method="post" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+          {% csrf_token %}
+          <button type="submit" name="hapus_buku" class="btn btn-danger">🗑️ Hapus Buku</button>
+        </form>
       </form>
     </div>
+<script>
+  const formsetContainer = $("#formset-container");
+  let totalForms = $("#id_form-TOTAL_FORMS");
+
+  $("#add-page").click(function () {
+    const formIndex = parseInt(totalForms.val());
+    const newForm = formsetContainer.find(".halaman-form:first").clone(true);
+
+    newForm.find("input").each(function () {
+      const name = $(this).attr("name").replace(/-\d+-/, `-${formIndex}-`);
+      const id = `id_${name}`;
+      $(this).attr({"name": name, "id": id}).val("");
+    });
+
+    newForm.appendTo(formsetContainer);
+    totalForms.val(formIndex + 1);
+  });
+</script>
 <script>console.log("JS dimuat");</script>
 <script src="{% static 'main.js' %}"></script>
 </body>

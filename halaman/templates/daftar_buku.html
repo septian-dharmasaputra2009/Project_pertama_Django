@@ -27,7 +27,7 @@
       {% for buku in daftar_buku %}
         <div class="buku-item" style="margin-bottom:30px; padding:20px; background:#fff; border-radius:8px;">
           <div style="display:flex;gap:20px;">
-            <img src="{{ buku.cover_url }}" alt="Cover {{ buku.judul }}" style="width:120px; height:auto; object-fit:cover; border-radius:4px;">
+            <img src="{{ buku.cover_url }}" alt="Cover {{ buku.judul }}" style="width:150px; height: 300px; object-fit:cover; border-radius:4px;">
             <div>
               <h2>
                 <a href="{% url 'daftar_isi' buku.id %}" style="color:#007bff; text-decoration:none;">

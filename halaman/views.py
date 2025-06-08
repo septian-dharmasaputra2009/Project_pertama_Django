@@ -89,10 +89,11 @@ def baca_buku(request, buku_id, halaman_awal=1):
     })
 from django.contrib import messages
 from django.forms import modelformset_factory
+
 @login_required
 def edit_buku(request, buku_id):
     buku = get_object_or_404(Buku, id=buku_id)
-    HalamanFormSet = modelformset_factory(Halaman, form=HalamanForm, extra=0, can_delete=True)
+    HalamanFormSet = modelformset_factory(Halaman, form=HalamanForm, extra=1, can_delete=True)
 
     # Hapus buku jika tombol hapus ditekan
     if request.method == 'POST' and 'hapus_buku' in request.POST:
@@ -117,7 +118,8 @@ def edit_buku(request, buku_id):
     return render(request, 'edit_buku.html', {
         'buku_form': buku_form,
         'formset': formset,
-        'buku': buku
+        'buku': buku,
+        
     })
 
 #tambah komen
