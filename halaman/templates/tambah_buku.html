@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Septian</title>
     <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
-</head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
 <body>
   <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
   <div class="sidebar hide" id="sidebar">
@@ -22,16 +23,46 @@
     </ul>
   </div>
   <div class="container" id="main">
-    <h2>➕ Tambah Buku Baru</h2>
-
-    <form method="POST">
-      {% csrf_token %}
-      <break>
+    <h2>Tambah Buku</h2>
+    <form method="post">
+      {% csrf_token %}<beak>
       {{ form.as_p }}
-      <a href="{% url 'daftar_buku' %}">← Kembali ke Daftar Buku</a>
+
+      <h3>Halaman Buku</h3>
+      <div id="formset-container">
+        {{ formset.management_form }}
+        {% for form in formset %}
+          <div class="halaman-form">
+            {{ form.gambar_url.label_tag }} {{ form.gambar_url }}
+            {{ form.nomor.label_tag }} {{ form.nomor }}
+            {{ form.DELETE }} Hapus
+          </div>
+        {% endfor %}
+      </div>
+
+      <button type="button" id="add-page">Tambahkan Halaman +</button><br><br>
       <button type="submit">Simpan Buku</button>
     </form>
   </div>
+
+<script>
+  const formsetContainer = $("#formset-container");
+  let totalForms = $("#id_form-TOTAL_FORMS");
+
+  $("#add-page").click(function () {
+    const formIndex = parseInt(totalForms.val());
+    const newForm = formsetContainer.find(".halaman-form:first").clone(true);
+
+    newForm.find("input").each(function () {
+      const name = $(this).attr("name").replace(/-\d+-/, `-${formIndex}-`);
+      const id = `id_${name}`;
+      $(this).attr({"name": name, "id": id}).val("");
+    });
+
+    newForm.appendTo(formsetContainer);
+    totalForms.val(formIndex + 1);
+  });
+</script>
 <script>console.log("JS dimuat");</script>
 <script src="{% static 'main.js' %}"></script>
 </body>

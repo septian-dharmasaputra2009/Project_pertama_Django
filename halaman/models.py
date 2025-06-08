@@ -13,10 +13,21 @@ class Artikel(models.Model):
 class Buku(models.Model):
     judul = models.CharField(max_length=200)
     penulis = models.CharField(max_length=100)
+    cover_url = models.URLField(help_text="Link gambar cover")
     deskripsi = models.TextField()
-    cover_url = models.URLField(blank=True)
-    gdrive_embed_url = models.URLField(help_text="URL dari Google Drive")
-    gdrive_download_url = models.URLField(help_text="Link langsung untuk download PDF")
+    pdf_url = models.URLField(blank=True, null=True, help_text="Opsional: Link PDF untuk diunduh")
 
     def __str__(self):
         return self.judul
+
+class Halaman(models.Model):
+    buku = models.ForeignKey(Buku, related_name='halaman', on_delete=models.CASCADE)
+    nomor = models.PositiveIntegerField()
+    gambar_url = models.URLField(help_text="Link gambar halaman")
+    pdf_url = models.URLField(blank=True, null=True, help_text="Opsional: Link PDF untuk diunduh")
+
+    class Meta:
+        ordering = ['nomor']  # agar urut sesuai nomor halaman
+
+    def __str__(self):
+        return f"{self.buku.judul} - Halaman {self.nomor}"

@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Isi - {{ buku.judul }}</title>
+  <link rel="stylesheet" href="{% static 'halaman/style.css' %}">
+</head>
+<body>
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar hide" id="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="{% url 'home' %}">🏠 Beranda</a></li>
+      <li><a href="{% url 'tambah' %}">✍️ Tambah Komentar</a></li>
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'tambah_buku' %}">➕ Tambah Buku</a></li>
+      <li><a href="{% url 'logout' %}" onclick="return confirm('Yakin mau logout?')">🔒 Logout</a></li>
+      {% else %}
+      <li><a href="{% url 'login' %}">🔑 Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="container" id="main">
+    <h2>{{ buku.judul }}</h2>
+    <img src="{{ buku.cover_url }}">
+    <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
+    <p>{{ buku.deskripsi }}</p>
+
+    {% if buku.pdf_url %}
+      <p><a href="{{ buku.pdf_url }}" target="_blank" class="btn">⬇️ Download PDF</a></p>
+    {% endif %}
+
+    <h3>Daftar Isi:</h3>
+    <ul>
+      {% for grup in grup_daftar_isi %}
+      <li>
+      <a href="{% url 'baca_buku' buku.id grup.start_page %}">
+        {{ grup.label }}
+      </a>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'daftar_buku' %}">⬅️ Kembali ke Daftar Buku</a>
+  </div>
+<script src="{% static 'main.js' %}"></script>
+</body>
+</html>

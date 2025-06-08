@@ -21,19 +21,32 @@
       {% endif %}
     </ul>
   </div>
-  <div class="container" id="main">
-    <h2>📝 Edit Buku: {{ buku.judul }}</h2>
+    <div class="container" id="main">
+      <h1>{{ buku.judul }}</h1>
+      <form method="post">
+        {% csrf_token %}<break>
+        {{ buku_form.as_p }}
+        <h3>Edit Halaman</h3>
+        {{ formset.management_form }}
+        {% for form in formset %}
+          <div style="margin-bottom:10px;">
+            {{ form.as_p }}
+            {% if form.instance.pk %}
+              <label>Hapus: {{ form.DELETE }}</label>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit">Simpan Perubahan</button>
+        <hr>
+        <h3 class="text-danger">Hapus Buku</h3>
+        <p>Jika kamu menghapus buku ini, semua halaman juga akan terhapus. Tindakan ini tidak bisa dibatalkan.</p>
 
-    <form method="POST">
-      {% csrf_token %}
-      <break>
-      {{ form.as_p }}
-      <button type="submit">Simpan Perubahan</button>
-    </form>
-
-    <a href="{% url 'daftar_buku' %}">← Kembali ke Daftar Buku</a>
-  </div>
+        <form method="post" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+        {% csrf_token %}
+        <button type="submit" name="hapus_buku" class="btn btn-danger">🗑️ Hapus Buku</button>
+      </form>
+    </div>
 <script>console.log("JS dimuat");</script>
-<script src="{% static 'halaman/main.js' %}"></script>
+<script src="{% static 'main.js' %}"></script>
 </body>
 </html>

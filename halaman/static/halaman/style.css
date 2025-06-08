@@ -92,6 +92,8 @@ h1,h2 {
     
 }
 
+.container canvas{max-width:100%;height:auto;}
+
 .info-box small {
   background-color: #f8f9fa;
   border-radius: 10px;
@@ -243,4 +245,61 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* === PDF Viewer === */
+#pdf-viewer {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+#pdf-pages canvas {
+  display: block;
+  margin: 20px auto;
+  max-width: 100%;
+  height: auto !important;
+  border: 1px solid #ccc;
+}
+
+/* === Tombol Navigasi PDF === */
+#pdf-viewer button {
+  margin: 10px 5px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#pdf-viewer button:hover {
+  background-color: #0056b3;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  margin: 10px 5px;
+  background-color: #0f5fd0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #084fc1;
+}
+
+.container img {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }

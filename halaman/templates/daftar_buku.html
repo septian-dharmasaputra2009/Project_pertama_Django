@@ -23,25 +23,38 @@
   </div>
   <div class="main-content" id="main">
     <div class="container">
-      <h1>📚 Daftar Buku</h1>
-
-      {% for buku in bukus %}
-        <div class="info-box">
-          <h3>{{ buku.judul }}</h3>
-          <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
-          <p>{{ buku.deskripsi }}</p>
-          <a href="{% url 'baca_buku' buku.id %}">📖 Baca Buku</a>
-          <a href="{{ buku.gdrive_download_url }}">⬇️ Download</a>
-          {% if user.is_authenticated %}
-          <a href="{% url 'edit_buku' buku.id %}">📝 Edit Buku</a>
-          {% endif %}
+      <h1>Perpustakaan</h1>
+      {% for buku in daftar_buku %}
+        <div class="buku-item" style="margin-bottom:30px; padding:20px; background:#fff; border-radius:8px;">
+          <div style="display:flex;gap:20px;">
+            <img src="{{ buku.cover_url }}" alt="Cover {{ buku.judul }}" style="width:120px; height:auto; object-fit:cover; border-radius:4px;">
+            <div>
+              <h2>
+                <a href="{% url 'daftar_isi' buku.id %}" style="color:#007bff; text-decoration:none;">
+                  {{ buku.judul }}
+                </a>
+              </h2>
+              <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
+              <p>{{ buku.deskripsi|truncatewords:25 }}</p>
+              {% if pdf_url %}
+                <p><a href="{{ pdf_url }}" target="_blank">⬇️ Download PDF</a></p>
+              {% endif %}
+              {% if user.is_authenticated %}
+              <a href="{% url 'edit_buku' buku.id %}">✏️ Edit Buku</a>
+              {% endif %}
+            </div>
+          </div>
         </div>
       {% empty %}
-      <p>Belum ada buku tersedia.</p>
+        <p>Belum ada buku tersedia. Yuk tambah buku baru!</p>
       {% endfor %}
+      {% if user.is_authenticated %}
+      <a href="{% url 'tambah_buku' %}" class="btn">➕ Tambah Buku</a>
+      {% endif %}
+      
     </div>
   </div>
 <script>console.log("JS dimuat");</script>
-<script src="{% static 'halaman/main.js' %}"></script>
+<script src="{% static 'main.js' %}"></script>
 </body>
 </html>

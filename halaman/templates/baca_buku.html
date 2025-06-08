@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- ===== Sidebar & Header singkat ===== -->
+<!-- SIDEBAR & HEADER -->
 <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 <div id="sidebar" class="sidebar hide">
   <h2>Menu</h2>
@@ -25,95 +25,38 @@
   </ul>
 </div>
 
-<!-- ===== Info buku ===== -->
-<div class="container" id="main">
-  <h2>{{ buku.judul }}</h2>
-  <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
-  <p>{{ buku.deskripsi }}</p>
+<!-- INFO BUKU -->
+  <div class="container" id="main">
+    <h2>{{ buku.judul }}</h2>
+    <p><strong>Penulis:</strong> {{ buku.penulis }}</p>
 
-  <a href="{{ buku.gdrive_download_url }}" target="_blank" class="btn btn-primary">⬇️ Download PDF</a>
-</div>
+    {% if buku.pdf_url %}
+      <p><a href="{{ buku.pdf_url }}" target="_blank" class="btn">⬇️ Download PDF</a></p>
+    {% endif %}
 
-  <!-- ===== PDF Viewer (10 halaman) ===== -->
-<div id="pdf-viewer" style="text-align: center; margin-top: 40px;">
-  <div id="pdf-pages"></div>
-  <button onclick="prevGroup()">⬅️ Sebelumnya</button>
-  <button onclick="nextGroup()">➡️ Selanjutnya</button>
-  <p>Halaman: <span id="page-start">1</span> – <span id="page-end">10</span> dari <span id="page-count">?</span></p>
-</div>
+    <div id="pdf-viewer">
+      {% for halaman in halaman_list %}
+        <div style="margin-bottom: 30px;">
+          <h4>Halaman {{ halaman.nomor }}</h4>
+          <img src="{{ halaman.gambar_url }}" alt="Halamandepan {{ halaman.nomor }}" style="max-width:100%; border:1px solid #ccc; border-radius:8px;">
+        </div>
+      {% endfor %}
 
-<!-- ===== pdf.js CDN ===== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-</script>
+      <div style="text-align:center; margin-top:30px;">
+        {% if prev_page %}
+          <a href="{% url 'baca_buku' buku.id prev_page %}" class="btn">⬅️ Sebelumnya</a>
+        {% endif %}
+        <span>Halaman {{ halaman_awal }}–{{ halaman_akhir }} dari {{ total_halaman }}</span>
+        {% if next_page %}
+          <a href="{% url 'baca_buku' buku.id next_page %}" class="btn">➡️ Selanjutnya</a>
+        {% endif %}
+      </div>
+    </div>
 
-<!-- ===== Script render 10 halaman ===== -->
-<script>
-const url = "{{ buku.gdrive_download_url }}"; // Supabase PDF URL
-
-let pdfDoc = null;
-let currentGroup = 1;
-const pagesPerGroup = 10;
-
-const viewer = document.getElementById("pdf-pages");
-const pageStartSpan = document.getElementById("page-start");
-const pageEndSpan = document.getElementById("page-end");
-const pageCountSpan = document.getElementById("page-count");
-
-function renderGroup(groupNumber) {
-  const startPage = (groupNumber - 1) * pagesPerGroup + 1;
-  const endPage = Math.min(pdfDoc.numPages, groupNumber * pagesPerGroup);
-
-  viewer.innerHTML = ''; // clear previous
-
-  for (let i = startPage; i <= endPage; i++) {
-    pdfDoc.getPage(i).then(function (page) {
-      const scale = 1.2;
-      const viewport = page.getViewport({ scale });
-
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      viewer.appendChild(canvas);
-
-      page.render({
-        canvasContext: context,
-        viewport: viewport
-      });
-    });
-  }
-
-  pageStartSpan.textContent = startPage;
-  pageEndSpan.textContent = endPage;
-}
-
-function nextGroup() {
-  const maxGroup = Math.ceil(pdfDoc.numPages / pagesPerGroup);
-  if (currentGroup < maxGroup) {
-    currentGroup++;
-    renderGroup(currentGroup);
-  }
-}
-
-function prevGroup() {
-  if (currentGroup > 1) {
-    currentGroup--;
-    renderGroup(currentGroup);
-  }
-}
-
-pdfjsLib.getDocument(url).promise.then(function (pdf) {
-  pdfDoc = pdf;
-  pageCountSpan.textContent = pdf.numPages;
-  renderGroup(currentGroup);
-});
-</script>
-
-<!-- Toggle sidebar JS kamu -->
+    <div style="margin-top:30px;">
+      <a href="{% url 'daftar_isi' buku.id %}">📖 Kembali ke Daftar Isi</a>
+    </div>
+  </div>
 <script src="{% static 'main.js' %}"></script>
 </body>
 </html>
